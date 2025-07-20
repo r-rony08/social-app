@@ -18,3 +18,8 @@ class UserProfile(models.Model):
     # location = models.CharField(max_length=100, blank=True)
     # privacy = models.CharField(max_length=10, choices=[('public', 'Public'), ('private', 'Private')], default='public')
     # is_verified = models.BooleanField(default=False)
+
+
+class Follow(models.Model):
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follower')
+    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
