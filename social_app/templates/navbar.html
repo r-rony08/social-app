@@ -1,9 +1,5 @@
 <!DOCTYPE html>
 {% load static %}
-{% load tz %}
-{% get_current_timezone as TIME_ZONE %}
-{% now "U" as now %}
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -59,10 +55,10 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button"
               data-bs-toggle="dropdown" aria-expanded="false">
-              {% if user.userprofile.profile_picture %}
-                <img src="{{ user.userprofile.profile_picture.url }}?t={{ now|date:'U' }}" width="32" height="32" class="rounded-circle" />
+              {% if user.user_profile.profile_picture %}
+                <img src="{{ user.user_profile.profile_picture.url }}" width="32px" height="32px" class="rounded-circle" />
               {% else %}
-                <img src="/media/By_Default.png" width="32" height="32" class="rounded-circle" />
+                <img src="{% static 'By_Default.png' %}" width="32px" height="32px" class="rounded-circle" />
               {% endif %}
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
