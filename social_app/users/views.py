@@ -50,6 +50,7 @@ def edit_profile(request):
         if form.is_valid():
             form.save(commit=True)
             form = EditProfile(instance=current_user)
+            return HttpResponseRedirect(reverse('users:profile'))
 
     return render(request, 'users/profile.html', context={'title':'Profile Page Here', 'form':form })
 

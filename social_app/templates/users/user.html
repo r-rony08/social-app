@@ -22,9 +22,12 @@
     </div>
 
     <div class="col-sm-8">
-        <h3>{{ user.username }}</h3>
+        <h3>{{ user.username }} <a href="{% url 'users:edit'%}" class="btn btn-light">Edit Profile</a></h3>
         <h4> {{ user.post.count }} Posts &nbsp;&nbsp; {{ user.follower.count }} Followers &nbsp;&nbsp; {{ user.following.count }} Following </h4>
 
+        <br>
+        <h3> {{ user.user_profile.fullname }} </h3>
+        <h6> {{ user.user_profile.bio }} </h6>
     </div>
 </div>
 
