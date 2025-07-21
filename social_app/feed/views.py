@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponseRedirect
 
-from users.forms import CreateNewUser, Profile
+from users.forms import CreateNewUser, EditProfile
 from users.models import UserProfile
 
 from django.contrib.auth import authenticate, login, logout

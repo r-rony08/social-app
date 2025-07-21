@@ -18,7 +18,7 @@ class CreateNewUser(UserCreationForm):
         fields = ('username', 'email', 'password1', 'password2')
 
 
-class Profile(forms.ModelForm):
+class EditProfile(forms.ModelForm):
 
     birth_date = forms.DateField(widget=forms.TextInput(attrs={'type':'date', }))
 

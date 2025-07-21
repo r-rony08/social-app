@@ -1,10 +1,11 @@
 from django.shortcuts import render, HttpResponseRedirect
-from users.forms import CreateNewUser, Profile
+from users.forms import CreateNewUser, EditProfile
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse, reverse_lazy
-from users.models import UserProfile
+from users.models import UserProfile,Follow
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from feed import views
 
 # Create your views here.
 
@@ -34,21 +35,21 @@ def login_page(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return HttpResponseRedirect(reverse('users:profile'))
+                return HttpResponseRedirect(reverse('feed:feed'))
             
     return render(request, 'users/login.html', context={'title':'Login Page Here', 'form':form })
 
 
 @login_required
-def profile(request):
+def edit_profile(request):
     current_user, created = UserProfile.objects.get_or_create(user=request.user)
-    form = Profile(instance=current_user)
+    form = EditProfile(instance=current_user)
 
     if request.method == 'POST':
-        form = Profile(request.POST, request.FILES, instance=current_user)
+        form = EditProfile(request.POST, request.FILES, instance=current_user)
         if form.is_valid():
             form.save(commit=True)
-            form = Profile(instance=current_user)
+            form = EditProfile(instance=current_user)
 
     return render(request, 'users/profile.html', context={'title':'Profile Page Here', 'form':form })
 
@@ -56,3 +57,8 @@ def profile(request):
 def logout_user(request):
     logout(request)
     return HttpResponseRedirect(reverse('users:login'))
+
+
+@login_required
+def profile(request):
+    return render(request, 'users/user.html', context={'title': "User Profile"})

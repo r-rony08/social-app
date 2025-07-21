@@ -1,0 +1,34 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %} Profile Page {% endblock %}
+
+
+{% block css_block %}
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-4">
+
+            {% if user.user_profile.profile_picture %}
+              <img src="{{ user.user_profile.profile_picture.url }}" width="220" height="220" class="rounded-circle me-2" />
+            {% else %}
+              <img src="{% static 'By_Default.png' %}" width="220" height="220" class="rounded-circle me-2" />
+            {% endif %}
+    </div>
+
+    <div class="col-sm-8">
+        <h3>{{ user.username }}</h3>
+        <h4> {{ user.post.count }} Posts &nbsp;&nbsp; {{ user.follower.count }} Followers &nbsp;&nbsp; {{ user.following.count }} Following </h4>
+
+    </div>
+</div>
+
+
+
+
+{% endblock %}
