@@ -6,6 +6,8 @@ from users.models import UserProfile,Follow
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from feed import views
+from feed.forms import PostForm
+from feed.models import Post
 
 # Create your views here.
 
@@ -62,4 +64,14 @@ def logout_user(request):
 
 @login_required
 def profile(request):
-    return render(request, 'users/user.html', context={'title': "User Profile"})
+    form = PostForm()
+    if request.method == "POST":
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return HttpResponseRedirect(reverse('feed'))
+    user_posts = Post.objects.filter(author=request.user)
+
+    return render(request, 'users/user.html', context={'title': "User Profile", 'form':form, 'user_posts': user_posts})

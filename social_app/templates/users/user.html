@@ -1,37 +1,146 @@
 {% extends 'navbar.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block title %} Profile Page {% endblock %}
-
+{% block title %}Profile - {{ user.username }}{% endblock %}
 
 {% block css_block %}
+<style>
+  body {
+    background-color: #fafafa;
+  }
 
+  .profile-header {
+    display: flex;
+    align-items: center;
+    padding: 30px 15px;
+  }
+
+  .profile-header img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .profile-info {
+    margin-left: 40px;
+  }
+
+  .profile-info h2 {
+    font-weight: 500;
+  }
+
+  .profile-stats {
+    display: flex;
+    gap: 30px;
+    margin: 15px 0;
+  }
+
+  .profile-bio {
+    font-size: 14px;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 30px;
+  }
+
+  .gallery-item {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+    transition: transform 0.3s ease;
+  }
+
+  .gallery-item:hover img {
+    transform: scale(1.05);
+  }
+
+  .modal-content form {
+    padding: 15px;
+  }
+</style>
 {% endblock %}
-
 
 {% block content %}
 
-<div class="row">
-    <div class="col-sm-4">
+<!-- Profile Header -->
+<div class="profile-header">
+  {% if user.user_profile.profile_picture %}
+    <img src="{{ user.user_profile.profile_picture.url }}" alt="Profile Picture">
+  {% else %}
+    <img src="{% static 'By_Default.png' %}" alt="Default Picture">
+  {% endif %}
 
-            {% if user.user_profile.profile_picture %}
-              <img src="{{ user.user_profile.profile_picture.url }}" width="220" height="220" class="rounded-circle me-2" />
-            {% else %}
-              <img src="{% static 'By_Default.png' %}" width="220" height="220" class="rounded-circle me-2" />
-            {% endif %}
+  <div class="profile-info">
+    <div class="d-flex align-items-center mb-2">
+      <h2 class="me-3">{{ user.username }}</h2>
+      <a href="{% url 'users:edit' %}" class="btn btn-outline-secondary btn-sm">Edit Profile</a>
     </div>
-
-    <div class="col-sm-8">
-        <h3>{{ user.username }} <a href="{% url 'users:edit'%}" class="btn btn-light">Edit Profile</a></h3>
-        <h4> {{ user.post.count }} Posts &nbsp;&nbsp; {{ user.follower.count }} Followers &nbsp;&nbsp; {{ user.following.count }} Following </h4>
-
-        <br>
-        <h3> {{ user.user_profile.fullname }} </h3>
-        <h6> {{ user.user_profile.bio }} </h6>
+    <div class="profile-stats">
+      <span><strong>{{ user.post.count }}</strong> posts</span>
+      <span><strong>{{ user.follower.count }}</strong> followers</span>
+      <span><strong>{{ user.following.count }}</strong> following</span>
     </div>
+    <div class="profile-bio">
+      <strong>{{ user.user_profile.fullname }}</strong><br>
+      {{ user.user_profile.bio }}
+    </div>
+  </div>
 </div>
 
+<!-- Post Photo Button -->
+<div class="text-center my-3">
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#postModal">
+    + New Post
+  </button>
+</div>
 
+<!-- Post Modal -->
+<div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">Create New Post</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          {{ form.as_p }}
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Post</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
+<!-- Gallery -->
+<div class="container">
+  {% if user_posts %}
+    <div class="gallery">
+      {% for post in user_posts %}
+        <div class="gallery-item">
+          <img src="{{ post.image.url }}" alt="Post Image">
+          
+        </div>
+        
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-center">You haven't posted anything yet.</p>
+  {% endif %}
+</div>
 
 {% endblock %}
